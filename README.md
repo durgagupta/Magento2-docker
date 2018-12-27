@@ -15,6 +15,10 @@ In this project, we are using:
 
 To begin with, please install docker and docker-compose on your system. 
 
+Flow following referance to install Docker
+> Mac: https://docs.docker.com/docker-for-mac/install/
+> Ubuntu : https://docs.docker.com/install/linux/docker-ce/ubuntu/
+
 Then follow the following steps:
 
 1). Clone or download this repository as 
