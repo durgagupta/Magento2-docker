@@ -55,5 +55,28 @@ Now, your server setup is all ready, now hit your domain name or IP to install M
 
 # Few common Docker command
 
+1). View the details on the container while your web server is running (with docker container ls or docker ps)
+2). Stop and remove containers and images with the following commands. Use the “all” flag (--all or -a) to view stopped containers.
+
+Stop container
+> docker stop <container name>
+
+Delete Contaner
+> docker rm  097b4b431690
+
+List of Contaner with used image
+> docker ps -a
+
+Delete All image
+> docker images -a | awk '{print $3}' | xargs docker rmi
+
+Delete Image
+> docker rmi Image Image
+
+Login to docker Image
+> docker run -it <image name>
+> docker exec -it <container name> 
+
+
 
 
