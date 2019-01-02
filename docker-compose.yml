@@ -24,3 +24,24 @@ services:
       - ./database_server/mysql.sh:/etc/mysql.sh
     ports:
       - "3306:3306"
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin
+    ports:
+      - "8580:80"
+    #links:
+    #  - database_server 
+    environment:
+    #  - PMA_HOST=mysql
+      - PMA_HOST=10.0.0.100
+  #
+  phpmyadmin-local:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin-local
+    ports:
+      - "8180:80"
+    #links:
+    #  - database_server 
+    environment:
+      - PMA_HOST=mysql
+      

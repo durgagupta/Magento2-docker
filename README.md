@@ -59,7 +59,7 @@ Now, your server setup is all ready, now hit your domain name or IP to install M
 2). Stop and remove containers and images with the following commands. Use the “all” flag (--all or -a) to view stopped containers.
 
 Stop container
-> docker stop <container name>
+> docker stop < container name >
 
 Delete Contaner
 > docker rm  097b4b431690
@@ -74,8 +74,24 @@ Delete Image
 > docker rmi Image Image
 
 Login to docker Image
-> docker run -it <image name>
-> docker exec -it <container name> 
+> docker run -it < image name >
+
+> docker exec -it < container name > 
+
+EG
+> docker exec -it apache2 bash
+
+Close all Docker
+> docker-compose down
+ 
+
+
+# Docker PHPMYADMIN DOC
+> https://hub.docker.com/r/phpmyadmin/phpmyadmin
+
+#Using Supervisor with Docker to manage processes
+Referance Url
+> https://blog.trifork.com/2014/03/11/using-supervisor-with-docker-to-manage-processes-supporting-image-inheritance/
 
 
 
