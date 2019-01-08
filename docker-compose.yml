@@ -5,43 +5,103 @@ services:
       context: ./web_server/
     container_name: apache2
     volumes:
-      - ./magento2:/var/www/html
+      - ./magento2/vendor:/var/www/html/vendor
+      - ./magento2/composer.lock:/var/www/html/composer.lock
+      - ./magento2/app:/var/www/html/app
+      - ./magento2/dev:/var/www/html/dev
+      - ./magento2/lib:/var/www/html/lib
+      - ./magento2/setup:/var/www/html/setup
+      - ./magento2/composer.json:/var/www/html/composer.json
+      # - ./magento2/.git:/var/www/html/.git
+      - ./web_server/magento.config:/etc/apache2/sites-enabled/magento.config
       - ./web_server/supervisord.conf:/etc/supervisor/conf.d/supervisord.conf
     ports:
       - "80:80"
+    depends_on:
+      - database_server
     links:
       - database_server
+    networks:
+      - <project_name>-network
+
+  # database_server:
+  #   build:
+  #     context: ./database_server/
+  #     args:
+  #       - mysql_password=dsg_pass
+  #       - mysql_database=magento2
+  #   container_name: mysql
+  #   volumes: 
+  #     - ./database_server/supervisord.conf:/etc/supervisor/conf.d/supervisord.conf
+  #     - ./database_server/mysql.sh:/etc/mysql.sh
+  #     - ./database_server/mysql-data:/var/lib/mysql
+  #   ports:
+  #     - "3306:3306"
 
   database_server:
-    build:
-      context: ./database_server/
-      args:
-        - mysql_password=dsg_pass
-        - mysql_database=magento2
+    image: mariadb
+    ports:
+     - 3300:3306
     container_name: mysql
-    volumes: 
-      - ./database_server/supervisord.conf:/etc/supervisor/conf.d/supervisord.conf
-      - ./database_server/mysql.sh:/etc/mysql.sh
-    ports:
-      - "3306:3306"
-  phpmyadmin:
-    image: phpmyadmin/phpmyadmin
-    container_name: phpmyadmin
-    ports:
-      - "8580:80"
-    #links:
-    #  - database_server 
     environment:
-    #  - PMA_HOST=mysql
-      - PMA_HOST=10.0.0.100
-  #
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=magento
+      - MYSQL_USER=magento
+      - MYSQL_PASSWORD=magento
+    volumes:
+      - ./database_server/mysql-data:/var/lib/mysql
+    networks:
+      - <project_name>-network
+
+  # phpmyadmin:
+  #   image: phpmyadmin/phpmyadmin
+  #   container_name: phpmyadmin
+  #   ports:
+  #     - "8580:80"
+  #   #links:
+  #   #  - database_server 
+  #   environment:
+  #   #  - PMA_HOST=mysql
+  #     - PMA_HOST=10.0.0.100
+
+  #for php myadmin
   phpmyadmin-local:
     image: phpmyadmin/phpmyadmin
     container_name: phpmyadmin-local
     ports:
       - "8180:80"
-    #links:
-    #  - database_server 
     environment:
       - PMA_HOST=mysql
+    networks:
+      - <project_name>-network  
+  #for Cache
+  redis:
+    image: redis
+    container_name: redis
+    ports:
+     - 6379
+    networks:
+      - <project_name>-network
+
+  #for Session
+  redis-session:
+    image: redis
+    container_name: redis-session
+    ports:
+     - 6379
+    networks:
+      - <project_name>-network
+
+  #for mail
+  mailhog:
+    image: mailhog/mailhog
+    ports:
+      - 1025:1025
+      - 8025:8025
+    networks:
+      - <project_name>-network
+
+networks:
+  <project_name>-network:
+    driver: bridge
       
