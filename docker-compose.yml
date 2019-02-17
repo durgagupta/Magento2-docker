@@ -5,6 +5,7 @@ services:
       context: ./web_server/
     container_name: apache2
     volumes:
+      # - appdata
       - ./magento2/vendor:/var/www/html/vendor
       - ./magento2/composer.lock:/var/www/html/composer.lock
       - ./magento2/app:/var/www/html/app
@@ -12,17 +13,21 @@ services:
       - ./magento2/lib:/var/www/html/lib
       - ./magento2/setup:/var/www/html/setup
       - ./magento2/composer.json:/var/www/html/composer.json
+      - ./magento2/auth.json:/var/www/html/auth.json
+      - ./magento2/var/import:/var/www/html/var/import
       # - ./magento2/.git:/var/www/html/.git
       - ./web_server/magento.config:/etc/apache2/sites-enabled/magento.config
       - ./web_server/supervisord.conf:/etc/supervisor/conf.d/supervisord.conf
     ports:
       - "80:80"
-    depends_on:
-      - database_server
-    links:
-      - database_server
+    # depends_on:
+    #   - database_server
+    # links:
+    #   - database_server
     networks:
       - <project_name>-network
+
+    
 
   # database_server:
   #   build:
@@ -53,16 +58,16 @@ services:
     networks:
       - <project_name>-network
 
-  # phpmyadmin:
-  #   image: phpmyadmin/phpmyadmin
-  #   container_name: phpmyadmin
-  #   ports:
-  #     - "8580:80"
-  #   #links:
-  #   #  - database_server 
-  #   environment:
-  #   #  - PMA_HOST=mysql
-  #     - PMA_HOST=10.0.0.100
+  phpmyadmin-119:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin-119
+    ports:
+      - "8181:80"
+    #links:
+    #  - database_server 
+    environment:
+    #  - PMA_HOST=mysql
+      - PMA_HOST=10.0.0.105
 
   #for php myadmin
   phpmyadmin-local:
@@ -93,15 +98,36 @@ services:
       - <project_name>-network
 
   #for mail
-  mailhog:
-    image: mailhog/mailhog
-    ports:
-      - 1025:1025
-      - 8025:8025
-    networks:
-      - <project_name>-network
+  # mailhog:
+  #   image: mailhog/mailhog
+  #   ports:
+  #     - 1025:1025
+  #     - 8025:8025
+  #   networks:
+  #     - <project_name>-network
+
+  ## for background sync
+  # bg-sync:
+  #   image: cweagans/bg-sync
+  #   volumes:
+  #     - ./magento2:/source
+  #   volumes_from:
+  #     - appdata
+  #   environment:
+  #     - SYNC_DESTINATION=/var/www/html
+  #     - SYNC_MAX_INOTIFY_WATCHES=40000
+  #     - SYNC_VERBOSE=1
+  #   privileged: true
+  
+  ## for background sync
+  # appdata:
+  #   image: tianon/true
+  #   volumes:
+  #     - ./magento:/var/www/magento
 
 networks:
   <project_name>-network:
     driver: bridge
+
+
       

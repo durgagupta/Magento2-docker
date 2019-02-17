@@ -8,7 +8,7 @@ LABEL description="Magento 2.2.7 with PHP 7.1"
 
 ENV COMPOSER_HOME /var/www/.composer/
 ENV INSTALL_DIR /var/www/html
-ENV MAGENTO_VERSION 2.2.6
+ENV MAGENTO_VERSION 2.2.7
 
 
 RUN apt-get update && apt-get install -y \
